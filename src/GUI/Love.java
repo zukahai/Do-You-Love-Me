@@ -5,6 +5,8 @@ import java.awt.Container;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
@@ -12,18 +14,28 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.Timer;
 
 
-public class Love extends JFrame implements MouseListener{
+public class Love extends JFrame implements MouseListener, ActionListener{
 	Container cn;
 	int M = 5, N = 5;
 	int pre = 13;
+	Timer timer;
 	JButton bt[][] = new JButton[M][N];
 	public Love() {
 		super("Do You Love Me ?");
 		cn = init();
 	}
+	
+	int count = 0;
+	
+	String s[] = {"Sorry!",
+				"I do not love you",
+				"Goodbye!",
+				""};
 	
 	public Container init() {
 		Container cn = this.getContentPane();
@@ -35,7 +47,7 @@ public class Love extends JFrame implements MouseListener{
 		pn3.setLayout(new FlowLayout());
 		pn3.setBackground(Color.black);
 		
-		JLabel lb = new JLabel("Do You Love Me");
+		JLabel lb = new JLabel("Do You Love Me?");
 		lb.setForeground(Color.magenta);
 		lb.setBackground(Color.black);
 		lb.setFont(new Font("Algerian", 1, 100));
@@ -61,10 +73,15 @@ public class Love extends JFrame implements MouseListener{
 				bt[i][j] = new JButton();
 				bt[i][j].setActionCommand((i * N + j) + "");
 				bt[i][j].addMouseListener(this);
+				bt[i][j].setBorder(null);
+				bt[i][j].setFont(new Font("Algerian", 1, 50));
+				bt[i][j].setForeground(Color.magenta);
+				bt[i][j].setBackground(Color.black);
 				pn.add(bt[i][j]);
 			}
 		
 		bt[2][1].setText("YES");
+		bt[2][1].addActionListener(this);
 		bt[2][3].setText("NO");
 		
 		cn.add(pn2, "North");
@@ -75,7 +92,15 @@ public class Love extends JFrame implements MouseListener{
 		this.setLocationRelativeTo(null);
 		setResizable(false);
 		
-//		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		timer = new Timer(2000, new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				lb.setText(s[count++]);
+				if (count == s.length)
+					System.exit(0);
+			}
+		});
+		
+		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		return cn;
 	}
 	
@@ -108,19 +133,38 @@ public class Love extends JFrame implements MouseListener{
 		JButton btt = (JButton) e.getComponent();
 		int k = Integer.parseInt(btt.getActionCommand());
 		if (k == pre) {
-			btt.setBackground(Color.black);
-			k = randNumber(pre);
+			btt.setText("");
+			k = pre = randNumber(pre);
+			int j = k % N;
+			int i = k / N;
+			bt[i][j].setText("NO");
 		}
 	}
 	
 	public int randNumber(int N) {
-		return 0;
+		int k = 0;
+		do {
+			k = (int) (Math.random() * 23 + 1);
+		} while (k == 11 || k == N);
+		return k;
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		if (e.getActionCommand().equals("11")) {
+			timer.start();
+			bt[2][1].setText("");
+			int j = pre % N;
+			int i = pre / N;
+			bt[i][j].setText("");
+		}
 	}
 
 }

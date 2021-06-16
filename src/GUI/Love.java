@@ -44,6 +44,7 @@ public class Love extends JFrame implements MouseListener, ActionListener{
 				"...",
 				" "};
 	boolean Music = true;
+	boolean ok = false;
 	Clip clip;
 	public Container init() {
 		Container cn = this.getContentPane();
@@ -118,7 +119,6 @@ public class Love extends JFrame implements MouseListener, ActionListener{
 			AudioInputStream audioStream = AudioSystem.getAudioInputStream(file);
 			clip = AudioSystem.getClip();
 			clip.open(audioStream);
-			String response = "";
 			clip.start();
 		} catch (UnsupportedAudioFileException | IOException | LineUnavailableException e1) {
 			// TODO Auto-generated catch block
@@ -151,6 +151,8 @@ public class Love extends JFrame implements MouseListener, ActionListener{
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
+		if (ok)
+			return;
 		// TODO Auto-generated method stub
 		JButton btt = (JButton) e.getComponent();
 		int k = Integer.parseInt(btt.getActionCommand());
@@ -197,13 +199,15 @@ public class Love extends JFrame implements MouseListener, ActionListener{
 			int j = pre % N;
 			int i = pre / N;
 			bt[i][j].setText("");
-			clip.stop();
+			if (clip != null)
+				clip.stop();
 			try {
 				sound(2);
 			} catch (UnsupportedAudioFileException | IOException | LineUnavailableException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
+			ok = true;
 		}
 	}
 

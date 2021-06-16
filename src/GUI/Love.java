@@ -41,7 +41,8 @@ public class Love extends JFrame implements MouseListener, ActionListener{
 	String s[] = {"Sorry!",
 				"I do not love you",
 				"Goodbye!",
-				""};
+				"...",
+				" "};
 	boolean Music = true;
 	Clip clip;
 	public Container init() {

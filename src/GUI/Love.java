@@ -9,7 +9,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.File;
+import java.io.IOException;
 
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -29,14 +36,14 @@ public class Love extends JFrame implements MouseListener, ActionListener{
 		super("Do You Love Me ?");
 		cn = init();
 	}
-	
 	int count = 0;
 	
 	String s[] = {"Sorry!",
 				"I do not love you",
 				"Goodbye!",
 				""};
-	
+	boolean Music = true;
+	Clip clip;
 	public Container init() {
 		Container cn = this.getContentPane();
 		
@@ -104,6 +111,20 @@ public class Love extends JFrame implements MouseListener, ActionListener{
 		return cn;
 	}
 	
+	public void sound(int index) throws UnsupportedAudioFileException, IOException, LineUnavailableException {
+		try {
+			File file = new File("Sound/" + index + ".wav");
+			AudioInputStream audioStream = AudioSystem.getAudioInputStream(file);
+			clip = AudioSystem.getClip();
+			clip.open(audioStream);
+			String response = "";
+			clip.start();
+		} catch (UnsupportedAudioFileException | IOException | LineUnavailableException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	}
+	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		new Love();
@@ -138,6 +159,17 @@ public class Love extends JFrame implements MouseListener, ActionListener{
 			int j = k % N;
 			int i = k / N;
 			bt[i][j].setText("NO");
+			if (Music) {
+				try {
+					sound(1);
+				} catch (UnsupportedAudioFileException | IOException | LineUnavailableException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				Music = false;
+			}
+			if (clip.getMicrosecondPosition() == clip.getMicrosecondLength()) 
+				Music = true;
 		}
 	}
 	
@@ -164,6 +196,13 @@ public class Love extends JFrame implements MouseListener, ActionListener{
 			int j = pre % N;
 			int i = pre / N;
 			bt[i][j].setText("");
+			clip.stop();
+			try {
+				sound(2);
+			} catch (UnsupportedAudioFileException | IOException | LineUnavailableException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		}
 	}
 
